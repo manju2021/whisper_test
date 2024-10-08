@@ -1,0 +1,60 @@
+import json
+
+# Example Whisper transcription data
+whisper_transcriptions = [
+    {"text": "Hello, how are you?", "start": 0.0, "end": 2.5},
+    {"text": "I'm good, thank you!", "start": 3.0, "end": 4.5}
+]
+
+# Example Diarization data
+diarization_segments = [
+    {"speaker": "Speaker 1", "start": 0.0, "end": 1.5},
+    {"speaker": "Speaker 2", "start": 1.5, "end": 3.5},
+    {"speaker": "Speaker 1", "start": 3.5, "end": 5.0}
+]
+
+# Function to match transcription with the speaker based on timestamps
+def merge_transcription_diarization(transcriptions, diarization):
+    merged_results = []
+    
+    # Loop over each transcription segment
+    for transcription in transcriptions:
+        transcription_start = transcription["start"]
+        transcription_end = transcription["end"]
+        text = transcription["text"]
+        
+        # Find the speaker(s) during this transcription time window
+        matching_speakers = []
+        
+        for segment in diarization:
+            speaker_start = segment["start"]
+            speaker_end = segment["end"]
+            speaker = segment["speaker"]
+            
+            # Check if the transcription overlaps with the diarization segment
+            if not (transcription_end < speaker_start or transcription_start > speaker_end):
+                # If overlap, append speaker info
+                matching_speakers.append(speaker)
+        
+        # Handle case where there are multiple speakers, or no matching speaker is found
+        if matching_speakers:
+            speaker = matching_speakers[0]  # Assume the first match is the main speaker (or refine as needed)
+        else:
+            speaker = "Unknown"
+        
+        # Append the merged result with speaker and text
+        merged_results.append({
+            "speaker": speaker,
+            "text": text,
+            "start": transcription_start,
+            "end": transcription_end
+        })
+    
+    return merged_results
+
+# Merge the transcriptions with speaker diarization
+merged_data = merge_transcription_diarization(whisper_transcriptions, diarization_segments)
+
+# Print the merged results
+for entry in merged_data:
+    print(f"{entry['speaker']}: {entry['text']} ({entry['start']}s - {entry['end']}s)")
