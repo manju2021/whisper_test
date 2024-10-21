@@ -1,0 +1,50 @@
+import os
+import pandas as pd
+import shutil
+
+# Paths to the CSV and audio folder
+csv_file_path = "path_to_call_log.csv"  # Replace with the path to your CSV file
+audio_folder_path = "path_to_audio_folder"  # Replace with the path to the folder containing the audio files
+output_audio_folder = "path_to_output_audio_folder"  # Replace with the path where you want to save the renamed audio files
+updated_csv_file_path = "path_to_save_updated_csv.csv"  # Path to save the updated CSV file
+
+# Load the CSV into a DataFrame
+df = pd.read_csv(csv_file_path)
+
+# Ensure there's a 'filename' column in the CSV to store the matched filenames
+if 'filename' not in df.columns:
+    df['filename'] = None
+
+# Function to check if a session ID is part of the filename
+def match_audio_file(session_id, audio_folder):
+    for filename in os.listdir(audio_folder):
+        if session_id in filename:  # Check if session ID is part of the audio file name
+            return filename  # Return the full filename if found
+    return None  # Return None if no match is found
+
+# Create the output folder if it doesn't exist
+if not os.path.exists(output_audio_folder):
+    os.makedirs(output_audio_folder)
+
+# Iterate through each row in the DataFrame and match session ID with audio files
+for index, row in df.iterrows():
+    session_id = str(row['session_id'])  # Assuming the session ID column is named 'session_id'
+    
+    # Match the session ID with audio files
+    matched_file = match_audio_file(session_id, audio_folder_path)
+    
+    if matched_file:
+        # Update the 'filename' column in the DataFrame with the matched audio filename
+        df.at[index, 'filename'] = matched_file
+        
+        # Copy and rename the audio file with just the session ID
+        src_path = os.path.join(audio_folder_path, matched_file)
+        dest_path = os.path.join(output_audio_folder, f"{session_id}.wav")  # Assuming audio files are .wav
+        shutil.copyfile(src_path, dest_path)
+    else:
+        print(f"No audio file found for session ID: {session_id}")
+
+# Save the updated CSV with matched filenames
+df.to_csv(updated_csv_file_path, index=False)
+
+print("CSV file updated and audio files saved with session ID names.")
