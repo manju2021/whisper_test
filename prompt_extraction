@@ -1,0 +1,31 @@
+def load_prompts_from_txt(file_path):
+    prompts = {}
+    with open(file_path, 'r') as file:
+        current_prompt = None
+        lines = []
+
+        for line in file:
+            line = line.rstrip()  # Remove trailing newline characters
+            
+            if not line:  # If we encounter an empty line, store the previous prompt
+                if current_prompt and lines:
+                    prompts[current_prompt] = "\n".join(lines)
+                    lines = []  # Clear the lines list for the next prompt
+                current_prompt = None
+            elif line.startswith("prompt"):  # Identify a new prompt section
+                current_prompt = line.strip(":")
+            else:
+                lines.append(line)  # Collect lines for the current prompt
+
+        # Save the last prompt after the loop ends
+        if current_prompt and lines:
+            prompts[current_prompt] = "\n".join(lines)
+    
+    return prompts
+
+# Load the prompts from the txt file
+prompts = load_prompts_from_txt('prompts.txt')
+
+# Retrieve a specific prompt with line breaks
+selected_prompt = prompts.get('prompt2')  # Example to retrieve prompt2
+print(selected_prompt)
