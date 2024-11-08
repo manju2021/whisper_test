@@ -1,0 +1,64 @@
+import streamlit as st
+import pandas as pd
+
+# Sample data: Replace with actual transcription and structured data
+transcription_data = [
+    "This is the first transcription record.",
+    "This is the second transcription record.",
+    "This is the third transcription record."
+]
+
+structured_data = [
+    {"Field1": "Data A1", "Field2": "Data A2", "Field3": "Data A3"},
+    {"Field1": "Data B1", "Field2": "Data B2", "Field3": "Data B3"},
+    {"Field1": "Data C1", "Field2": "Data C2", "Field3": "Data C3"}
+]
+
+# Initialize session state for record index
+if 'record_index' not in st.session_state:
+    st.session_state.record_index = 0
+
+# Function to navigate to the next record
+def next_record():
+    if st.session_state.record_index < len(transcription_data) - 1:
+        st.session_state.record_index += 1
+
+# Function to navigate to the previous record
+def previous_record():
+    if st.session_state.record_index > 0:
+        st.session_state.record_index -= 1
+
+# Get the current record
+current_index = st.session_state.record_index
+transcription = transcription_data[current_index]
+structured_record = structured_data[current_index]
+
+# App Layout
+st.title("Transcription and Structured Data Review")
+
+# Display Transcription Data
+st.subheader("Transcription Data")
+st.text_area("Transcription", transcription, height=200, disabled=True)
+
+# Display Structured Data with Accuracy Inputs
+st.subheader("Structured Data")
+accuracy_inputs = {}
+for key, value in structured_record.items():
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.write(f"{key}: {value}")
+    with col2:
+        accuracy_inputs[key] = st.text_input(f"Accuracy for {key}", key=f"accuracy_{key}_{current_index}")
+
+# Navigation Buttons
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Back") and current_index > 0:
+        previous_record()
+
+with col2:
+    if st.button("Next"):
+        next_record()
+
+# Display record index information
+st.write(f"Record {current_index + 1} of {len(transcription_data)}")
