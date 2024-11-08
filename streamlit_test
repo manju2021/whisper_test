@@ -62,3 +62,12 @@ with col2:
 
 # Display record index information
 st.write(f"Record {current_index + 1} of {len(transcription_data)}")
+
+
+from IPython.display import IFrame
+
+# Run Streamlit and display in an iframe
+!streamlit run app.py &
+
+# Replace 8501 with your Streamlit server port if needed
+IFrame(src="http://localhost:8501", width=800, height=600)
