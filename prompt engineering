@@ -1,0 +1,30 @@
+Data Collection: You start with raw audio data that’s transcribed into text (Whisper API), and then the speaker labels are added through diarization (Whisper Diarization API).
+Data Structuring: You use a custom function to separate the transcription into customer and agent segments.
+LLM Extraction: Using various types of prompts, you then extract structured data elements (text classification, entity extraction, sentiment analysis, etc.) from the conversation.
+Prompt Engineering: This is the core of your methodology, where you design prompts to extract meaningful insights, ensuring that the model provides the right information in the correct format.
+
+4. Best Practices for Prompt Engineering
+To summarize and explain the methodology better:
+
+Contextualization: Each prompt provides the LLM with necessary context, including examples and explanations of the task. This helps guide the model to give more accurate answers.
+
+Clear Instruction: Prompts are explicit and direct, ensuring that the LLM knows exactly what it needs to do (e.g., classify sentiment, extract entities, provide solutions).
+
+Structured Output: You ask the LLM to return answers in a structured format (e.g., "Yes/No", "Entity List", "Sentiment Classification"), which makes it easier to integrate the results into your analytics.
+
+Examples: You provide clear examples of what the desired outputs should look like. This sets expectations for the model and helps it generalize better.
+
+Iterative Refinement: Based on the results you get, you continuously refine your prompts to improve accuracy and relevance.
+
+Summary of Prompt Engineering Methods in Your Approach:
+Task-Specific Prompting: Tailored prompts for each data point you want to extract (e.g., sentiment, coverage).
+Instructional Prompting: Clear instructions, context, and output structure are provided to ensure the LLM generates the correct format.
+Few-Shot Prompting: Examples provided to guide the model’s predictions, ensuring better accuracy and understanding.
+Contextual Prompting: You provide rich context to help the LLM understand the task, often supported by relevant examples.
+Entity Recognition and Extraction: Focused on extracting named entities (e.g., personal information, products).
+Role-Specific Prompting: Crafted to separate customer and agent dialogue, making the analysis more granular.
+
+This would emphasize the structured nature of the tasks, the instructional approach to guiding the model, and the multi-task aspect (e.g., classification, extraction, sentiment analysis) of the approach.
+
+
+
