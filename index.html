@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Play Audio</title>
+</head>
+<body>
+    <h1>Upload and Play Audio File</h1>
+
+    <!-- Form for uploading audio file -->
+    <input type="file" id="audio-upload" accept=".wav,.gsm,.mp3" onchange="playAudio()" />
+    
+    <br><br>
+
+    <!-- Audio player to play the uploaded file -->
+    <audio id="audio-player" controls>
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        function playAudio() {
+            const fileInput = document.getElementById('audio-upload');
+            const audioPlayer = document.getElementById('audio-player');
+
+            // Check if the user uploaded a file
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+
+                // Create a URL for the uploaded file (this allows us to avoid sending it to the server)
+                const audioUrl = URL.createObjectURL(file);
+
+                // Set the audio player's source to the uploaded file URL
+                audioPlayer.src = audioUrl;
+
+                // Play the audio file
+                audioPlayer.play();
+            } else {
+                alert('No file selected');
+            }
+        }
+    </script>
+</body>
+</html>
+
