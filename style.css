@@ -23,3 +23,49 @@ button {
 button:disabled {
     background-color: gray;
 }
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.tab-container {
+    width: 80%;
+    margin: 20px auto;
+}
+
+.tabs {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    cursor: pointer;
+    border-bottom: 2px solid #ccc;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    margin-right: 5px;
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+
+.tab-link.active {
+    background: #fff;
+    border: 2px solid #ccc;
+    border-bottom: none;
+}
+
+.tab-content {
+    display: none;
+    border: 2px solid #ccc;
+    padding: 20px;
+    background: #fff;
+}
+
+.tab-content.active {
+    display: block;
+}
+
