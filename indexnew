@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload and Feature Extraction</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJv3X4jP2yT7QXB9P8skz0mgv9ABZl9Qxd7U5ocmDpxz1zTrgdyQU6JJXygt" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,9 +67,9 @@
         <div class="row">
             <div class="col text-center">
                 <div class="tabs">
-                    <div class="tab active-tab" onclick="showTab(1)">Tab 1: Upload File</div>
-                    <div class="tab" onclick="showTab(2)">Tab 2: Transcription</div>
-                    <div class="tab" onclick="showTab(3)">Tab 3: Extracted Features</div>
+                    <div class="tab active-tab">Tab 1: Upload File</div>
+                    <div class="tab">Tab 2: Transcription</div>
+                    <div class="tab">Tab 3: Extracted Features</div>
                 </div>
             </div>
         </div>
@@ -79,10 +79,12 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Upload Your Audio File</h5>
-                    <div class="form-group">
-                        <input type="file" id="audioFile" class="form-control" accept="audio/*">
-                    </div>
-                    <button class="btn btn-primary mt-3" onclick="transcribeFile()">Transcribe</button>
+                    <form method="POST" enctype="multipart/form-data" action="/upload">
+                        <div class="form-group">
+                            <input type="file" id="audioFile" class="form-control" name="file" accept="audio/*" required>
+                        </div>
+                        <button class="btn btn-primary mt-3" type="submit">Transcribe</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -91,8 +93,12 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Transcribed Text</h5>
-                    <textarea id="transcribedText" class="form-control" readonly></textarea>
-                    <button class="btn btn-success mt-3" onclick="extractFeatures()">Extract Features</button>
+                    <form method="POST" action="/extract_features">
+                        <div class="form-group">
+                            <textarea id="transcribedText" class="form-control" name="transcribed_text" readonly>{{ transcribed_text }}</textarea>
+                        </div>
+                        <button class="btn btn-success mt-3" type="submit">Extract Features</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -101,84 +107,16 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Extracted Features</h5>
-                    <textarea id="extractedFeatures" class="form-control" readonly></textarea>
+                    <textarea id="extractedFeatures" class="form-control" readonly>{{ extracted_features }}</textarea>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Bootstrap JS & Popper.js (for functionality) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybL6S8j6dFeVf6UgfXj9e/32z8t4s0G+P5gFqfbVX7bBa8E+z" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-cu5tIu8OFl5l7tC+F67+35Rfz3tzUz0nqgfch5DKwIaO/pNrKvA6ujgXqYhxSgma" crossorigin="anonymous"></script>
-
-    <script>
-        let transcribedValue = "";
-        let extractedValue = "";
-
-        // Show Tab Functionality
-        function showTab(tabIndex) {
-            // Hide all tabs content
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach((tab) => tab.classList.remove('active-tab-content'));
-
-            // Deactivate all tabs
-            const tabLinks = document.querySelectorAll('.tab');
-            tabLinks.forEach((tab) => tab.classList.remove('active-tab'));
-
-            // Show the selected tab
-            document.getElementById('tab' + tabIndex).classList.add('active-tab-content');
-            tabLinks[tabIndex - 1].classList.add('active-tab');
-        }
-
-        // Transcribe the file using Flask backend
-        function transcribeFile() {
-            const fileInput = document.getElementById('audioFile');
-            const file = fileInput.files[0];
-
-            if (file) {
-                const formData = new FormData();
-                formData.append("file", file);
-
-                fetch('/upload', {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.transcribed_text) {
-                            transcribedValue = data.transcribed_text;
-                            document.getElementById('transcribedText').value = transcribedValue;
-                            showTab(2);  // Switch to Tab 2 after transcription
-                        }
-                    })
-                    .catch(error => alert('Error transcribing file.'));
-            } else {
-                alert("Please upload an audio file.");
-            }
-        }
-
-        // Extract features from the transcribed text using Flask backend
-        function extractFeatures() {
-            const transcribedText = document.getElementById('transcribedText').value;
-
-            fetch('/extract_features', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ transcribed_text: transcribedText })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.features) {
-                        extractedValue = JSON.stringify(data.features, null, 2);
-                        document.getElementById('extractedFeatures').value = extractedValue;
-                        showTab(3);  // Switch to Tab 3 after extracting features
-                    }
-                })
-                .catch(error => alert('Error extracting features.'));
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
 </body>
+
 </html>
