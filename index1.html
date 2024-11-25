@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Processor</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-dark" style="background-color: #003366;">
+        <a class="navbar-brand" href="#">Audio Processor</a>
+        <div class="ml-auto">
+            <a class="btn btn-light" href="{{ url_for('logout') }}">Log Out</a>
+            <a class="btn btn-light" href="{{ url_for('process_new_file') }}">Process New File</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Upload and Process Audio File</h2>
+                {% if step == 1 %}
+                <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" required class="form-control">
+                    <button type="submit" class="btn btn-primary mt-3">Upload File</button>
+                </form>
+                {% elif step == 2 %}
+                <h3>Audio Uploaded!</h3>
+                <audio controls>
+                    <source src="{{ url_for('static', filename='uploads/' + session['file_path'].split('/')[-1]) }}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+                <form action="{{ url_for('transcribe') }}" method="POST">
+                    <button type="submit" class="btn btn-success mt-3">Transcribe & Diarize</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
